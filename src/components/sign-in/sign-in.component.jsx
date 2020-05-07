@@ -2,10 +2,10 @@ import React from 'react';
 
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
+import { connect } from 'react-redux';
 
-import { signInWithGoogle } from '../../firebase/firebase.utils';
 import { authenticate } from '../../api/restApi';
-import { setUser } from '../../Utils/user.utils';
+import { setCurrentUser } from '../../redux/user/user.actions';
 
 import './sign-in.styles.scss';
 
@@ -23,6 +23,8 @@ class SignIn extends React.Component {
     event.preventDefault();
 
     const { email, password } = this.state;
+    const { setCurrentUser } = this.props;
+    // let history = useHistory();
 
     try {
       const result = await authenticate(
@@ -31,8 +33,12 @@ class SignIn extends React.Component {
       );
 
       if (result && result.data && result.data.token) {
-        console.log(`signin completed ${JSON.stringify(result)}`);
-        setUser('', email, result.token);
+        let user = {
+          username: '',
+          email,
+          token: result.data.token
+        }
+        setTimeout(() => setCurrentUser(user), 500);
       }
 
       this.setState({
@@ -80,7 +86,7 @@ class SignIn extends React.Component {
           />
           <div className='buttons'>
             <CustomButton type='submit'> Sign in </CustomButton>
-            <CustomButton onClick={signInWithGoogle} isGoogleSignIn>
+            <CustomButton isGoogleSignIn>
               Sign in with Google
             </CustomButton>
           </div>
@@ -90,4 +96,8 @@ class SignIn extends React.Component {
   }
 }
 
-export default SignIn;
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+});
+
+export default connect(null, mapDispatchToProps)(SignIn);
