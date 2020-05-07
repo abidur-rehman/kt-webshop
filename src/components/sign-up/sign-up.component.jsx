@@ -3,9 +3,10 @@ import React from 'react';
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
 import { signup } from '../../api/restApi';
-import { setUser } from '../../Utils/user.utils';
+import { setCurrentUser } from '../../redux/user/user.actions';
 
 import './sign-up.styles.scss';
+import {connect} from "react-redux";
 
 class SignUp extends React.Component {
   constructor() {
@@ -23,6 +24,7 @@ class SignUp extends React.Component {
     event.preventDefault();
 
     const { displayName, email, password, confirmPassword } = this.state;
+    const { setCurrentUser } = this.props;
 
     if (password !== confirmPassword) {
       alert("passwords don't match");
@@ -37,8 +39,12 @@ class SignUp extends React.Component {
       );
 
       if (result && result.data && result.data.token) {
-        console.log(`signup completed ${JSON.stringify(result)}`);
-        setUser(displayName, email, result.token);
+        let user = {
+          username: displayName,
+          email,
+          token: result.data.token
+        }
+        setCurrentUser(user);
       }
 
       this.setState({
@@ -106,4 +112,8 @@ class SignUp extends React.Component {
   }
 }
 
-export default SignUp;
+const mapStateToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+});
+
+export default connect(null, mapStateToProps)(SignUp);
