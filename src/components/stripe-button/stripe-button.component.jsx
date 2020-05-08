@@ -1,29 +1,17 @@
 import React from 'react';
-import StripeCheckout from 'react-stripe-checkout';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { CheckoutForm } from './checkout-form.component';
+import './stripe-button.styles.scss';
 
-const StripeCheckoutButton = ({ price }) => {
-  const priceForStripe = price * 100;
-  const publishableKey = 'pk_test_0zcJU99lTj5V4l6qko6KFcuH00bUNZwiRo';
 
-  const onToken = token => {
-    console.log(token);
-    alert('Payment Succesful!');
-  };
-
+const stripePromise = loadStripe('pk_test_0zcJU99lTj5V4l6qko6KFcuH00bUNZwiRo');
+const StripeCheckoutUpgarde = ({ price }) => {
   return (
-    <StripeCheckout
-      label='Pay Now'
-      name='KT Webshop Ltd.'
-      billingAddress
-      shippingAddress
-      description={`Your total is £${price}`}
-      amount={priceForStripe}
-      currency="GBP"
-      panelLabel='Pay Now'
-      token={onToken}
-      stripeKey={publishableKey}
-    />
+    <Elements stripe={stripePromise}>
+      <CheckoutForm price={price}/>
+    </Elements>
   );
 };
 
-export default StripeCheckoutButton;
+export default StripeCheckoutUpgarde;
