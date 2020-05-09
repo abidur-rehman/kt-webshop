@@ -3,6 +3,15 @@ import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
 
+import {
+    PaymentInfo,
+    AddressLegend,
+    PaymentForm,
+    PaymentCard,
+    PaymentCardLegend,
+    PaymentCardDetails
+} from './stripe-button.styles'
+
 export const CheckoutForm = ({ price }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -28,6 +37,7 @@ export const CheckoutForm = ({ price }) => {
 
         if (error) {
             console.log('[error]', error);
+            alert(`Error: ${error.message}`);
         } else {
             console.log('[PaymentMethod]', paymentMethod);
             alert('Payment Succesful!');
@@ -57,12 +67,12 @@ export const CheckoutForm = ({ price }) => {
     };
 
     return (
-        <div className={'payment-info'}>
-            <form className={'payment-form'} onSubmit={handleSubmit}>
+        <PaymentInfo>
+            <PaymentForm onSubmit={handleSubmit}>
                 <fieldset className={'fieldset-address'}>
-                    <legend> Address Details </legend>
+                    <AddressLegend> Address Details </AddressLegend>
                     <FormInput name='name' type='name'
-                        handleChange={e => { e.preventDefault(); setName(e.target.value)}}
+                        handleChange={e => { setName(e.target.value)}}
                         value={name} label='Name' required/>
                     <FormInput name='email' type='email'
                         handleChange={e => { e.preventDefault(); setEmail(e.target.value)}}
@@ -74,16 +84,16 @@ export const CheckoutForm = ({ price }) => {
                         handleChange={e => { e.preventDefault(); setAddress(e.target.value)}}
                         value={address} label='Address' required/>
                 </fieldset>
-                <fieldset className={'fieldset-card'}>
-                    <legend> Payment Details </legend>
-                    <div className={'card-details'}>
+                <PaymentCard>
+                    <PaymentCardLegend> Payment Details </PaymentCardLegend>
+                    <PaymentCardDetails>
                         <CardElement options={CARD_ELEMENT_OPTIONS}/>
                         <CustomButton type="submit" disabled={!stripe}>
                             Pay £{price}
                         </CustomButton>
-                    </div>
-                </fieldset>
-            </form>
-        </div>
+                    </PaymentCardDetails>
+                </PaymentCard>
+            </PaymentForm>
+        </PaymentInfo>
     );
 };

@@ -2,8 +2,6 @@ import React from 'react';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { CheckoutForm } from './checkout-form.component';
-import './stripe-button.styles.scss';
-
 
 const stripePromise = loadStripe('pk_test_0zcJU99lTj5V4l6qko6KFcuH00bUNZwiRo');
 const StripeCheckoutUpgarde = ({ price }) => {
