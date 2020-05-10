@@ -1,5 +1,9 @@
 import ShopActionTypes from './shop.types';
 
+const initialState = {
+  loading: true
+}
+
 const normalize = (sections) => {
   const result = sections.reduce(function(result, item) {
     let key = item.routeName;
@@ -9,11 +13,12 @@ const normalize = (sections) => {
   return result;
 }
 
-const shopReducer = (state = {}, action) => {
+const shopReducer = (state = initialState, action) => {
   switch (action.type) {
     case ShopActionTypes.FETCH_SHOP_DATA_SUCCESS:
       return {
         ...state,
+        loading: false,
         collections: normalize(action.payload)
       };
     default:

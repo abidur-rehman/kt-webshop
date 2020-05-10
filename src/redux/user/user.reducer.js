@@ -9,7 +9,18 @@ const userReducer = (state = INITIAL_STATE, action) => {
     case UserActionTypes.SET_CURRENT_USER:
       return {
         ...state,
-        currentUser: action.payload
+        currentUser: action.payload,
+        error: ''
+      };
+    case UserActionTypes.AUTH_USER_FAILURE:
+      return {
+        ...state,
+        error: action.payload
+      };
+    case UserActionTypes.SIGN_USER_FAILURE:
+      return {
+        ...state,
+        error: action.payload
       };
     default:
       return state;
