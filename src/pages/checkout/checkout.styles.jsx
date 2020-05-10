@@ -37,6 +37,10 @@ export const TotalContainer = styled.div`
   font-size: 25px;
 `;
 
+export const CardContainer = styled.div`
+  width: 100%;
+`;
+
 export const WarningContainer = styled.div`
   text-align: center;
   margin-top: 40px;
