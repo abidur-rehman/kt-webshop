@@ -15,40 +15,50 @@ import {
   CheckoutHeaderContainer,
   HeaderBlockContainer,
   TotalContainer,
-  WarningContainer
+  WarningContainer,
+  CardContainer
 } from './checkout.styles';
 
-const CheckoutPage = ({ cartItems, total }) => (
-  <CheckoutPageContainer>
-    <CheckoutHeaderContainer>
-      <HeaderBlockContainer>
-        <span>Product</span>
-      </HeaderBlockContainer>
-      <HeaderBlockContainer>
-        <span>Description</span>
-      </HeaderBlockContainer>
-      <HeaderBlockContainer>
-        <span>Quantity</span>
-      </HeaderBlockContainer>
-      <HeaderBlockContainer>
-        <span>Price</span>
-      </HeaderBlockContainer>
-      <HeaderBlockContainer>
-        <span>Remove</span>
-      </HeaderBlockContainer>
-    </CheckoutHeaderContainer>
-    {cartItems.map(cartItem => (
-      <CheckoutItem key={cartItem.id} cartItem={cartItem} />
-    ))}
-    <TotalContainer>TOTAL: £{total}</TotalContainer>
-    <StripeCheckoutUpgarde price={total} />
-      <WarningContainer>
-          *Please use the following test credit card for payments*
-          <br />
-          4000 0082 6000 0000 - Exp: 01/24 - CVV: 123
+const displayCardContainer = (total) => {
+  return (
+    <CardContainer>
+      <StripeCheckoutUpgarde price={total}/>
+      <WarningContainer >
+      *Please use the following test credit card for payments*
+        <br />
+        '4000 0082 6000 0000 - Exp: 01/24 - CVV: 123'
       </WarningContainer>
-  </CheckoutPageContainer>
-);
+    </CardContainer>
+  );
+}
+const CheckoutPage = ({ cartItems, total }) => {
+  return (
+    <CheckoutPageContainer>
+      <CheckoutHeaderContainer>
+        <HeaderBlockContainer>
+          <span>Product</span>
+        </HeaderBlockContainer>
+        <HeaderBlockContainer>
+          <span>Description</span>
+        </HeaderBlockContainer>
+        <HeaderBlockContainer>
+          <span>Quantity</span>
+        </HeaderBlockContainer>
+        <HeaderBlockContainer>
+          <span>Price</span>
+        </HeaderBlockContainer>
+        <HeaderBlockContainer>
+          <span>Remove</span>
+        </HeaderBlockContainer>
+      </CheckoutHeaderContainer>
+      {cartItems.map(cartItem => (
+        <CheckoutItem key={cartItem.id} cartItem={cartItem}/>
+      ))}
+      <TotalContainer>TOTAL: £{total}</TotalContainer>
+      {total > 0 ? displayCardContainer(total) : ""}
+    </CheckoutPageContainer>
+  )
+};
 
 const mapStateToProps = createStructuredSelector({
   cartItems: selectCartItems,
