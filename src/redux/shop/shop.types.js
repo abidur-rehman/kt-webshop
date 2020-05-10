@@ -1,0 +1,7 @@
+const ShopActionTypes = {
+  FETCH_SHOP_DATA: 'FETCH_SHOP_DATA',
+  FETCH_SHOP_DATA_SUCCESS: 'FETCH_SHOP_DATA_SUCCESS',
+  FETCH_SHOP_DATA_ERROR: 'FETCH_SHOP_DATA_ERROR',
+};
+
+export default ShopActionTypes;

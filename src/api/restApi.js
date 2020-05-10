@@ -54,3 +54,11 @@ export const signup = (name, email, password) => {
       return err.response;
     });
 };
+
+export const getShopData = () => {
+  const requestParameters = {
+    method: 'GET',
+    url: `/api/shopdata`
+  };
+  return restApi.request(requestParameters);
+};

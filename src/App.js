@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { fetchShopData } from './redux/shop/shop.actions';
 import { createStructuredSelector } from 'reselect';
 
 import './App.css';
@@ -15,6 +16,11 @@ import { selectCurrentUser } from './redux/user/user.selectors';
 import Header from './components/header/header.component';
 
 class App extends React.Component {
+
+  componentDidMount() {
+    this.props.fetchShopData();
+  }
+
   render() {
     return (
       <div>
@@ -31,7 +37,11 @@ class App extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-    currentUser: selectCurrentUser
+  currentUser: selectCurrentUser
 });
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = dispatch => ({
+  fetchShopData: () => dispatch(fetchShopData())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
