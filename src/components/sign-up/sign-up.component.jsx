@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
-import { signup } from '../../api/restApi';
-import { setCurrentUser } from '../../redux/user/user.actions';
+import { signUpUser } from '../../redux/user/user.actions';
 
-import { SignUpContainer, SignUpTitle } from './sign-up.styles';
+import { selectUserErrorMessage } from '../../redux/user/user.selectors';
+import { SignUpContainer, SignUpTitle, ErrorMessageContainer } from './sign-up.styles';
 
 
 class SignUp extends React.Component {
@@ -21,44 +22,18 @@ class SignUp extends React.Component {
     };
   }
 
-  handleSubmit = async event => {
+  handleSubmit = event => {
     event.preventDefault();
 
     const { displayName, email, password, confirmPassword } = this.state;
-    const { setCurrentUser } = this.props;
+    const { signUpUser } = this.props;
 
     if (password !== confirmPassword) {
         alert("passwords don't match");
       return;
     }
 
-    try {
-      const result = await signup(
-        displayName,
-        email,
-        password
-      );
-
-      if (result && result.data && result.data.token) {
-        let user = {
-          username: displayName,
-          email,
-          token: result.data.token
-        }
-        setCurrentUser(user);
-      }
-
-      this.setState({
-        displayName: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-      });
-
-
-    } catch (error) {
-      console.error(error);
-    }
+    signUpUser(displayName, email, password);
   };
 
   handleChange = event => {
@@ -108,13 +83,18 @@ class SignUp extends React.Component {
             />
             <CustomButton type='submit'>SIGN UP</CustomButton>
           </form>
+          <ErrorMessageContainer>{this.props.error ? this.props.error.message : ''}</ErrorMessageContainer>
         </SignUpContainer>
     );
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user))
+const mapStateToProps = createStructuredSelector({
+  error: selectUserErrorMessage
 });
 
-export default connect(null, mapDispatchToProps)(SignUp);
+const mapDispatchToProps = dispatch => ({
+  signUpUser: (name, email, password) => dispatch(signUpUser(name, email, password))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

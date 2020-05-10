@@ -1,16 +1,18 @@
 import React from 'react';
+import { createStructuredSelector } from 'reselect';
 
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
 import { connect } from 'react-redux';
 
-import { authenticate } from '../../api/restApi';
-import { setCurrentUser } from '../../redux/user/user.actions';
+import { authUser } from '../../redux/user/user.actions';
+import { selectUserErrorMessage } from '../../redux/user/user.selectors';
 
 import {
   SignInContainer,
   SignInTitle,
-  ButtonsBarContainer
+  ButtonsBarContainer,
+  ErrorMessageContainer
 } from './sign-in.styles';
 
 class SignIn extends React.Component {
@@ -23,47 +25,29 @@ class SignIn extends React.Component {
     };
   }
 
-  handleSubmit = async event => {
+  handleSubmit = event => {
     event.preventDefault();
 
     const { email, password } = this.state;
-    const { setCurrentUser } = this.props;
-    // let history = useHistory();
-
-    try {
-      const result = await authenticate(
-          email,
-          password
-      );
-
-      if (result && result.data && result.data.token) {
-        let user = {
-          username: '',
-          email,
-          token: result.data.token
-        }
-        setTimeout(() => setCurrentUser(user), 500);
-      }
-
-      this.setState({
-        displayName: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-      });
-
-    } catch (error) {
-      console.error(error);
-    }
-
-    this.setState({ email: '', password: '' });
-  };
+    const { authUser } = this.props;
+    authUser(email, password);
+  }
 
   handleChange = event => {
     const { value, name } = event.target;
 
     this.setState({ [name]: value });
   };
+
+  getMessage = () => {
+    const { message } = this.props.error;
+    debugger
+    if (message) {
+      return message;
+    }
+    return "";
+  }
+  ;
 
   render() {
     return (
@@ -91,17 +75,22 @@ class SignIn extends React.Component {
             <ButtonsBarContainer>
               <CustomButton type='submit'> Sign in </CustomButton>
               <CustomButton isGoogleSignIn>
-                Sign in with Google
+                Google Sign in
               </CustomButton>
             </ButtonsBarContainer>
           </form>
+          <ErrorMessageContainer>{this.props.error ? this.props.error.message : ""}</ErrorMessageContainer>
         </SignInContainer>
     );
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user))
+const mapStateToProps = createStructuredSelector({
+  error: selectUserErrorMessage
 });
 
-export default connect(null, mapDispatchToProps)(SignIn);
+const mapDispatchToProps = dispatch => ({
+  authUser: (email, password) => dispatch(authUser(email, password))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
